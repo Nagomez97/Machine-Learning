@@ -132,7 +132,7 @@
 (defvar *inicio-siembra*   1   ) ; posicion desde la que se empieza a sembrar
 (defvar *m6*               nil ) ; t=Mancala5
 (defparameter *2-sentidos*       nil ) ; Switch doble sentido: t=movimiento en ambos sentidos, nil=sentido unico
-(defparameter *verb*             nil   ) ; Switch verbose: imprime comentarios sobre evolucion del programa
+(defparameter *verb*             T   ) ; Switch verbose: imprime comentarios sobre evolucion del programa
 (defparameter *verjugada*        nil   ) ; Switch para ver cada jugada (nil = reduce print, p.e. en juego automatico
                                  ; y en su lugar saca una barra para seguir la evolucion de la actividad)
 (defparameter *vermarcador*      nil   ) ; Switch para ver el marcador si *verjugada*=nil
