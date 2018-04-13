@@ -34,8 +34,11 @@ class Player(object):
 		ret += '(matriz-x-vector ' + weightMatrix + inputs + ')))))'
 
 		ret += "\n\n\n"
-		ret += "(defvar *test* (make-jugador \n\t:nombre   '|Test|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'heuristica))\n\n"
-		ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *test*))"
+		ret += "(defvar *"+self.name+"* (make-jugador \n\t:nombre   '|"+self.name+"|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'heuristica))\n\n"
+		ret += "(partida 0 2 (list *jdr-nmx-Regular*	*"+self.name+"*))"
+		ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Regular*))"
+		ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *"+self.name+"*))"
+		ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Bueno*))"
 
 		return ret		
 
