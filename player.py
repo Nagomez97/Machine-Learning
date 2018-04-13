@@ -58,10 +58,10 @@ class Player(object):
 		newGen = []
 		newGen.append(player1)
 		newGen.append(player2)
+		# Introduce a new random player
 		newGen.append(random_player(numNeurons, numInputs))
-
-		# Combining players
-
+		# Combine new players
+		newGen += combine_players(player1, player2, population-3, numNeurons, numInputs)
 
 	""" Combine two players and generates a list of children
 	:param player1, player2
@@ -89,3 +89,22 @@ class Player(object):
 			c.bias = combine_element(player1.bias, player2.bias)
 
 		return children
+
+
+	""" Combine two elements with a random probability
+	:param num1: first element to combine
+	:param num2: second element to combine
+
+	Probabilities: 
+		Return a random number: 5%
+		Return the first number: 47.5%
+		Return the second number: 47.5%
+	"""
+	def combine_element(num1, num2):
+		a = rand()
+		if(a < 0.05):
+			return (random()*2 - 1)
+		elif(a < 0.525):
+			return num1
+		else:
+			return num2
