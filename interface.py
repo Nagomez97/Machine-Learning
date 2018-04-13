@@ -34,10 +34,6 @@ class Interface(object):
 		p1 = [int(line[i][2]) for i in range(4)]
 		p2 = [int(line[i][4]) for i in range(4)]
 
-		print('\nmatch')
-		print('p1:', p1)
-		print('p2:', p2)
-
 		wins = 0
 		score = 0
 		for i in range(4):
@@ -52,5 +48,5 @@ class Interface(object):
 				if p2[i] > p1[i]:
 					wins += 1
 					score += 1000
-					
+
 		return (wins, score)
