@@ -15,7 +15,8 @@ class Interface(object):
 	"""
 	def exec_game(self):
 		outfile = open("output", "w")
-		output = subprocess.call(['sbcl', '--script', 'mancala11.cl'], stdout=outfile)
+		output = subprocess.call(['sbcl', '--script', 'test.cl'], stdout=outfile)
+		outfile.close()
 
 		return self.get_winner()
 
@@ -39,8 +40,3 @@ class Interface(object):
 		else:
 			return 0
 
-
-"""Main code sequence (for testing)"""
-
-game = Interface()
-print(game.exec_game())

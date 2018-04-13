@@ -1,4 +1,4 @@
-
+from random import *
 
 class Player(object):
 
@@ -20,22 +20,42 @@ class Player(object):
 		self.weighVector = None
 		self.bias = None
 
+	def __str__(self):
+		bias = str(self.bias)
+		weightVector = "'" + str(self.weightVector).replace("[", "(").replace(']',')\n').replace(',', '')
+		weightMatrix = "'" + str(self.weightMatrix).replace("[", "(").replace(']',')\n').replace(',', '')
+		biasVector = "'" + str(self.biasVector).replace("[", "(").replace(']',')\n').replace(',', '').rstrip("\n")
+		inputs = '(inputs estado)'
+
+		ret = '\n(defun heuristica (estado)\n'
+		ret += '(+ ' + bias
+		ret += '(prod-escalar ' + weightVector
+		ret += '(suma-vectores ' + biasVector
+		ret += '(matriz-x-vector ' + weightMatrix + inputs + ')))))'
+
+		ret += "\n\n\n"
+		ret += "(defvar *test* (make-jugador \n\t:nombre   '|Test|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'heuristica))\n\n"
+		ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *test*))"
+
+		return ret		
+
 	""" Generates a random player (only one output)
 	:param numNeurons: number of neurons in hidden layer
 	:param numInputs: number of inputs
 
 	returns a new random player (Player)
 	"""
-	def random_player(numNeurons, numInputs):
+	@staticmethod
+	def random_player(name, numNeurons, numInputs):
 		player = Player(name)
 
 		# Input to hidden function
-		player.weightMatrix = [[(random()*2 - 1) for i in numInputs] for j in numNeurons]
-		player.biasVector = [(random()*2 - 1) for i in numNeurons]
+		player.weightMatrix = [[(random()*2) for i in range(numInputs)] for j in range(numNeurons)]
+		player.biasVector = [(random()*2) for i in range(numNeurons)]
 
 		# Hidden to output function
-		player.weightVector = [(random()*2 - 1) for i in numNeurons] 
-		player.bias = random()*2 - 1
+		player.weightVector = [(random()*2) for i in range(numNeurons)] 
+		player.bias = random()*2
 
 		return player
 
@@ -54,6 +74,7 @@ class Player(object):
 		randomPlayer
 		population - 3 combined players
 	"""
+	@staticmethod
 	def new_generation(player1, player2, population, numNeurons, numInputs):
 		newGen = []
 		newGen.append(player1)
@@ -70,6 +91,7 @@ class Player(object):
 
 	returns a list of children as a result of p1 and p2 combinations
 	"""
+	@staticmethod
 	def combine_players(player1, player2, numChildren, numNeurons, numInputs):
 		# Empty children
 		children = [Player() for i in numChildren]
@@ -100,11 +122,12 @@ class Player(object):
 		Return the first number: 47.5%
 		Return the second number: 47.5%
 	"""
+	@staticmethod
 	def combine_element(num1, num2):
 		a = rand()
-		if(a < 0.05):
-			return (random()*2 - 1)
-		elif(a < 0.525):
+		if(a < 0.475):
 			return num1
-		else:
+		elif(a < 0.95):
 			return num2
+		else:
+			return (random()*2 - 1)

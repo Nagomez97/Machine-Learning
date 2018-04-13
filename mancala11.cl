@@ -896,11 +896,7 @@
 ;              (estado-lado-sgte-jugador estado))))
 
 (defun mi-f-eval (estado)
-  (- (agua-fuera (estado-tablero estado)
-             (lado-contrario (estado-lado-sgte-jugador estado))) 
-      (* 10 (get-fichas (estado-tablero estado) 
-        (lado-contrario (estado-lado-sgte-jugador estado))
-        0))))
+  (print (inputs estado)))
 
 
 (defvar *nacho* (make-jugador
@@ -933,3 +929,4 @@
 
 ; (partida 0 2 (list *nacho*      *jdr-nmx-Bueno*))
 (partida 0 2 (list *jdr-nmx-Bueno*      *nacho*))
+
