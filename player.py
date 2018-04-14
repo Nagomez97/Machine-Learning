@@ -127,7 +127,7 @@ class Player(object):
 		b1 = player1.bias
 		b2 = player2.bias
 		for c in children:
-			c.weightMatrix = [[Player.combine_element(wm1[i][j], wm2[i][j]) for j in range(numNeurons)] for i in range(numInputs)]
+			c.weightMatrix = [[Player.combine_element(wm1[i][j], wm2[i][j]) for j in range(numInputs)] for i in range(numNeurons)]
 			c.biasVector = [Player.combine_element(bv1[i], bv2[i]) for i in range(numNeurons)]
 			c.weightVector = [Player.combine_element(wv1[i], wv2[i]) for i in range(numNeurons)]
 			c.bias = Player.combine_element(b1, b2) 
