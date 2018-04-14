@@ -51,12 +51,12 @@ class Player(object):
 		player = Player(name)
 
 		# Input to hidden function
-		player.weightMatrix = [[(random()*2-1) for i in range(numInputs)] for j in range(numNeurons)]
-		player.biasVector = [(random()*2-1) for i in range(numNeurons)]
+		player.weightMatrix = [[(uniform(-1, 1)) for i in range(numInputs)] for j in range(numNeurons)]
+		player.biasVector = [(uniform(-1, 1)) for i in range(numNeurons)]
 
 		# Hidden to output function
-		player.weightVector = [(random()*2-1) for i in range(numNeurons)] 
-		player.bias = random()*2-1
+		player.weightVector = [(uniform(-1, 1)) for i in range(numNeurons)] 
+		player.bias = uniform(-1, 1)
 
 		return player
 
@@ -84,7 +84,7 @@ class Player(object):
 		name = 'gen' + str(gen) + 'player'
 		newGen.append(Player.random_player(name + '2', numNeurons, numInputs))
 		# Generate names
-		names = [name + str(i) for i in range(population-3)]
+		names = [name + str(i+3) for i in range(population-3)]
 		# Combine new players
 		newGen += Player.combine_players(player1, player2, population-3, numNeurons, numInputs, names)
 		return newGen
@@ -100,25 +100,37 @@ class Player(object):
 	def combine_players(player1, player2, numChildren, numNeurons, numInputs, names):
 		# Empty children
 		children = [Player(names[i]) for i in range(numChildren)]
-		for c in children:
-			c.weightMatrix = [[None]*numNeurons]*numInputs
-			c.weightVector = [None]*numInputs
-			c.biasVector = [None]*numInputs
+		# for c in children:
+		# 	c.weightMatrix = [[None]*numNeurons]*numInputs
+		# 	c.weightVector = [None]*numInputs
+		# 	c.biasVector = [None]*numInputs
 
-		for i in range(numInputs):
-			# Combining weightMatrix
-			for n in range(numNeurons):
-				for c in children:
-					c.weightMatrix[i][n] = Player.combine_element(player1.weightMatrix[i][n], player2.weightMatrix[i][n])
-			# Combining biasVector and weightVector
-			for c in children:
-				c.weightVector[i] = Player.combine_element(player1.weightVector[i], player2.weightVector[i])
-				c.biasVector[i] = Player.combine_element(player1.biasVector[i], player2.biasVector[i])
+		# for i in range(numInputs):
+		# 	# Combining weightMatrix
+		# 	for n in range(numNeurons):
+		# 		for c in children:
+		# 			c.weightMatrix[i][n] = Player.combine_element(player1.weightMatrix[i][n], player2.weightMatrix[i][n])
+		# 	# Combining biasVector and weightVector
+		# 	for c in children:
+		# 		c.weightVector[i] = Player.combine_element(player1.weightVector[i], player2.weightVector[i])
+		# 		c.biasVector[i] = Player.combine_element(player1.biasVector[i], player2.biasVector[i])
 		
-		# Combining biases
+		# # Combining biases
+		# for c in children:
+		# 	c.bias = Player.combine_element(player1.bias, player2.bias)
+		wm1 = player1.weightMatrix
+		wm2 = player2.weightMatrix
+		bv1 = player1.biasVector
+		bv2 = player2.biasVector
+		wv1 = player1.weightVector
+		wv2 = player2.weightVector
+		b1 = player1.bias
+		b2 = player2.bias
 		for c in children:
-			c.bias = Player.combine_element(player1.bias, player2.bias)
-
+			c.weightMatrix = [[Player.combine_element(wm1[i][j], wm2[i][j]) for j in range(numNeurons)] for i in range(numInputs)]
+			c.biasVector = [Player.combine_element(bv1[i], bv2[i]) for i in range(numNeurons)]
+			c.weightVector = [Player.combine_element(wv1[i], wv2[i]) for i in range(numNeurons)]
+			c.bias = Player.combine_element(b1, b2) 
 		return children
 
 
@@ -139,7 +151,7 @@ class Player(object):
 		elif(a < 0.95):
 			return num2
 		else:
-			return (random()*2 - 1)
+			return uniform(-1, 1)
 
 
 	def save (self):

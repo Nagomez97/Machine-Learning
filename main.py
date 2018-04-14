@@ -24,7 +24,7 @@ print('X                         Generación 0                            X')
 print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 
 n = 'gen' + str(gen) + 'player'
-players = [player.Player.random_player(n + str(i), 14, 14) for i in range(10)]
+players = [player.Player.random_player(n + str(i), 10, 14) for i in range(10)]
 
 t = tournament.Tournament(players)
 t.all_vs_all()
@@ -46,7 +46,7 @@ for i in range(1, numGens):
 	print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 	
 	n = 'gen' + str(gen) + 'player'
-	players = player.Player.new_generation(gen, top1, top2, 10, 14, 14)
+	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
 	t = tournament.Tournament(players)
 	t.all_vs_all()
