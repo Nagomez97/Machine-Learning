@@ -20,28 +20,22 @@ class Player(object):
 		self.weighVector = None
 		self.bias = None
 
-		self.score = 0
-		self.wins = 0
-
 	def __str__(self):
 		bias = str(self.bias)
 		weightVector = "'" + str(self.weightVector).replace("[", "(").replace(']',')\n').replace(',', '')
 		weightMatrix = "'" + str(self.weightMatrix).replace("[", "(").replace(']',')\n').replace(',', '')
 		biasVector = "'" + str(self.biasVector).replace("[", "(").replace(']',')\n').replace(',', '').rstrip("\n")
 		inputs = '(inputs estado)'
+		heuristica = 'h_'+self.name
 
-		ret = '\n(defun h-' + self.name + ' (estado)\n'
+		ret = '\n(defun ' + heuristica + ' (estado)\n'
 		ret += '(+ ' + bias
-		ret += '(prod-escalar ' + weightVector
+		ret += '\n(prod-escalar ' + weightVector
 		ret += '(suma-vectores ' + biasVector
-		ret += '(matriz-x-vector ' + weightMatrix + inputs + ')))))'
+		ret += '\n(matriz-x-vector ' + weightMatrix + inputs + ')))))'
 
 		ret += "\n\n\n"
-		ret += "(defvar *"+self.name+"* (make-jugador \n\t:nombre   '|"+self.name+"|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'h-" + self.name + "))\n\n"
-		# ret += "(partida 0 2 (list *jdr-nmx-Regular*	*"+self.name+"*))"
-		# ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Regular*))"
-		# ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *"+self.name+"*))"
-		# ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Bueno*))"
+		ret += "(defvar *"+self.name+"* (make-jugador \n\t:nombre   '|"+self.name+"|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'" + heuristica + "))\n\n"
 
 		return ret		
 
@@ -56,12 +50,12 @@ class Player(object):
 		player = Player(name)
 
 		# Input to hidden function
-		player.weightMatrix = [[(random()*2) for i in range(numInputs)] for j in range(numNeurons)]
-		player.biasVector = [(random()*2) for i in range(numNeurons)]
+		player.weightMatrix = [[(random()*2-1) for i in range(numInputs)] for j in range(numNeurons)]
+		player.biasVector = [(random()*2-1) for i in range(numNeurons)]
 
 		# Hidden to output function
-		player.weightVector = [(random()*2) for i in range(numNeurons)] 
-		player.bias = random()*2
+		player.weightVector = [(random()*2-1) for i in range(numNeurons)] 
+		player.bias = random()*2-1
 
 		return player
 
@@ -137,18 +131,3 @@ class Player(object):
 			return num2
 		else:
 			return (random()*2 - 1)
-
-	""" Returns de lisp output for a list of matches between the players of the list
-	Returns:
-		0: draw
-		1: p1 wins
-		2: p2 wins
-	"""
-	@staticmethod
-	def match_players(ls):
-		ret = ''
-		for i, p1 in enumerate(ls):
-			for p2 in ls[(i+1):]:
-				ret += "(partida 0 2 (list *"+p1.name+"*	*"+p2.name+"*))"
-				ret += "(partida 0 2 (list *"+p2.name+"*	*"+p1.name+"*))"
-		return ret
