@@ -17,22 +17,42 @@ game = interface.Interface()
 # Generacion original
 gen = 0
 n = 'gen' + str(gen) + 'player'
-players = [player.Player.random_player(n + str(i), 14, 14) for i in range(10)]
+players = [player.Player.random_player('player' + str(i), 14, 14) for i in range(10)]
 
-ranking = ['    name    - wins - score']
+# Generamos enfrentamientos entre todos los players y los enfrentamos
+lisp = player.Player.match_players(players)
+file = "test.cl"
+f = open(file, 'w+')
 for i, p in enumerate(players):
-	name = n + str(i)
-	file = 'players/' + name + '.cl'
-	f = open(file, 'w+')
-	f.write(r + str(p))
-	f.close()
+	p.name = "player"+str(i)
+	r += str(p)
 
-	wins, score = game.exec_game(file)
-	ranking.append(name + ' -   ' + str(wins) + '  - ' + str(score))
+r += lisp
 
-ranking_file = open('players/ranking', 'w+')
+f.write(r)
+f.close()
 
-ranking.sort(key=lambda score: score.split()[4], reverse=True) # sorts ranking by wins
-ranking_file.write('\n'.join(ranking))
+game.exec_game(file)
 
-ranking_file.close()
+# Queremos generar jugadores que ganen a regular
+
+
+# ranking = ['    name    - wins - score']
+# for i, p in enumerate(players):
+# 	name = n + str(i)
+# 	file = 'players/' + name + '.cl'
+# 	f = open(file, 'w+')
+# 	f.write(r + str(p))
+# 	f.close()
+
+# 	p.wins, p.score = game.exec_game(file)
+# 	ranking.append(name + ' -   ' + str(wins) + '  - ' + str(score))
+
+# ranking_file = open('players/ranking', 'w+')
+
+# ranking.sort(key=lambda score: score.split()[4], reverse=True) # sorts ranking by wins
+# ranking_file.write('\n'.join(ranking))
+
+# ranking_file.close()
+
+# # Generaciones posteriores

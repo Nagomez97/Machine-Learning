@@ -20,6 +20,9 @@ class Player(object):
 		self.weighVector = None
 		self.bias = None
 
+		self.score = 0
+		self.wins = 0
+
 	def __str__(self):
 		bias = str(self.bias)
 		weightVector = "'" + str(self.weightVector).replace("[", "(").replace(']',')\n').replace(',', '')
@@ -27,18 +30,18 @@ class Player(object):
 		biasVector = "'" + str(self.biasVector).replace("[", "(").replace(']',')\n').replace(',', '').rstrip("\n")
 		inputs = '(inputs estado)'
 
-		ret = '\n(defun heuristica (estado)\n'
+		ret = '\n(defun h-' + self.name + ' (estado)\n'
 		ret += '(+ ' + bias
 		ret += '(prod-escalar ' + weightVector
 		ret += '(suma-vectores ' + biasVector
 		ret += '(matriz-x-vector ' + weightMatrix + inputs + ')))))'
 
 		ret += "\n\n\n"
-		ret += "(defvar *"+self.name+"* (make-jugador \n\t:nombre   '|"+self.name+"|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'heuristica))\n\n"
-		ret += "(partida 0 2 (list *jdr-nmx-Regular*	*"+self.name+"*))"
-		ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Regular*))"
-		ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *"+self.name+"*))"
-		ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Bueno*))"
+		ret += "(defvar *"+self.name+"* (make-jugador \n\t:nombre   '|"+self.name+"|\n\t:f-juego  #'f-j-nmx\n\t:f-eval   #'h-" + self.name + "))\n\n"
+		# ret += "(partida 0 2 (list *jdr-nmx-Regular*	*"+self.name+"*))"
+		# ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Regular*))"
+		# ret += "(partida 0 2 (list *jdr-nmx-Bueno*      *"+self.name+"*))"
+		# ret += "(partida 0 2 (list *"+self.name+"*		*jdr-nmx-Bueno*))"
 
 		return ret		
 
@@ -134,3 +137,18 @@ class Player(object):
 			return num2
 		else:
 			return (random()*2 - 1)
+
+	""" Returns de lisp output for a list of matches between the players of the list
+	Returns:
+		0: draw
+		1: p1 wins
+		2: p2 wins
+	"""
+	@staticmethod
+	def match_players(ls):
+		ret = ''
+		for i, p1 in enumerate(ls):
+			for p2 in ls[(i+1):]:
+				ret += "(partida 0 2 (list *"+p1.name+"*	*"+p2.name+"*))"
+				ret += "(partida 0 2 (list *"+p2.name+"*	*"+p1.name+"*))"
+		return ret

@@ -19,6 +19,7 @@ class Interface(object):
 		outfile.close()
 
 		return self.get_wins_score()
+		
 
 	"""Gets the winner of a match
 	"""
