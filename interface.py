@@ -14,21 +14,22 @@ class Interface(object):
 	2: p2 wins
 	"""
 	def exec_game(self, file):
-		outfile = open("output", "w")
-		output = subprocess.call(['sbcl', '--script', file], stdout=outfile)
-		outfile.close()
+		# outfile = open("output", "w")
+		# output = subprocess.call(['sbcl', '--script', file], stdout=outfile)
+		# outfile.close()
+		output = subprocess.getoutput('sbcl --script ' + file + ' | grep Marcador')
 
-		return self.get_wins_score()
+		return self.get_wins_score(output.split('\n'))
 
 	"""Gets the winner of a match
 	"""
-	def get_wins_score(self):
-		r = open("output", "r")
-		ls = r.readlines()
+	def get_wins_score(self, results):
+		# r = open("output", "r")
+		# ls = r.readlines()
 
 		# Score line
-		line = [ls[3+(5*i)].split() for i in range(4)]
-
+		# line = [ls[3+(5*i)].split() for i in range(4)]
+		line = [l.split() for l in results]
 		
 		# Results
 		p1 = [int(line[i][2]) for i in range(4)]

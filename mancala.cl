@@ -865,3 +865,4 @@
   (unless (equal pos 7)
     (cons (get-fichas tablero lado pos)
           (input-lado tablero lado (+ 1 pos)))))
+
