@@ -1,4 +1,5 @@
 from random import *
+import pickle
 
 class Player(object):
 
@@ -50,12 +51,12 @@ class Player(object):
 		player = Player(name)
 
 		# Input to hidden function
-		player.weightMatrix = [[(random()*2-1) for i in range(numInputs)] for j in range(numNeurons)]
-		player.biasVector = [(random()*2-1) for i in range(numNeurons)]
+		player.weightMatrix = [[(uniform(-1, 1)) for i in range(numInputs)] for j in range(numNeurons)]
+		player.biasVector = [(uniform(-1, 1)) for i in range(numNeurons)]
 
 		# Hidden to output function
-		player.weightVector = [(random()*2-1) for i in range(numNeurons)] 
-		player.bias = random()*2-1
+		player.weightVector = [(uniform(-1, 1)) for i in range(numNeurons)] 
+		player.bias = uniform(-1, 1)
 
 		return player
 
@@ -75,14 +76,18 @@ class Player(object):
 		population - 3 combined players
 	"""
 	@staticmethod
-	def new_generation(player1, player2, population, numNeurons, numInputs):
+	def new_generation(gen, player1, player2, population, numNeurons, numInputs):
 		newGen = []
 		newGen.append(player1)
 		newGen.append(player2)
 		# Introduce a new random player
-		newGen.append(random_player(numNeurons, numInputs))
+		name = 'gen' + str(gen) + 'player'
+		newGen.append(Player.random_player(name + '2', numNeurons, numInputs))
+		# Generate names
+		names = [name + str(i+3) for i in range(population-3)]
 		# Combine new players
-		newGen += combine_players(player1, player2, population-3, numNeurons, numInputs)
+		newGen += Player.combine_players(player1, player2, population-3, numNeurons, numInputs, names)
+		return newGen
 
 	""" Combine two players and generates a list of children
 	:param player1, player2
@@ -92,24 +97,40 @@ class Player(object):
 	returns a list of children as a result of p1 and p2 combinations
 	"""
 	@staticmethod
-	def combine_players(player1, player2, numChildren, numNeurons, numInputs):
+	def combine_players(player1, player2, numChildren, numNeurons, numInputs, names):
 		# Empty children
-		children = [Player() for i in numChildren]
-			
-		for i in numInputs:
-			# Combining weightMatrix
-			for n in numNeurons:
-				for c in children:
-					c.weightMatrix[i][n] = combine_element(player1.weightMatrix[i][n], player2.weightMatrix[i][n])
-			# Combining biasVector and weightVector
-			for c in children:
-				c.weightVector[i] = combine_element(player1.weightVector[i], player2.weightVector[i])
-				c.biasVector[i] = combine_element(player1.biasVector[i], player2.biasVector[i])
-		
-		# Combining biases
-		for c in children:
-			c.bias = combine_element(player1.bias, player2.bias)
+		children = [Player(names[i]) for i in range(numChildren)]
+		# for c in children:
+		# 	c.weightMatrix = [[None]*numNeurons]*numInputs
+		# 	c.weightVector = [None]*numInputs
+		# 	c.biasVector = [None]*numInputs
 
+		# for i in range(numInputs):
+		# 	# Combining weightMatrix
+		# 	for n in range(numNeurons):
+		# 		for c in children:
+		# 			c.weightMatrix[i][n] = Player.combine_element(player1.weightMatrix[i][n], player2.weightMatrix[i][n])
+		# 	# Combining biasVector and weightVector
+		# 	for c in children:
+		# 		c.weightVector[i] = Player.combine_element(player1.weightVector[i], player2.weightVector[i])
+		# 		c.biasVector[i] = Player.combine_element(player1.biasVector[i], player2.biasVector[i])
+		
+		# # Combining biases
+		# for c in children:
+		# 	c.bias = Player.combine_element(player1.bias, player2.bias)
+		wm1 = player1.weightMatrix
+		wm2 = player2.weightMatrix
+		bv1 = player1.biasVector
+		bv2 = player2.biasVector
+		wv1 = player1.weightVector
+		wv2 = player2.weightVector
+		b1 = player1.bias
+		b2 = player2.bias
+		for c in children:
+			c.weightMatrix = [[Player.combine_element(wm1[i][j], wm2[i][j]) for j in range(numInputs)] for i in range(numNeurons)]
+			c.biasVector = [Player.combine_element(bv1[i], bv2[i]) for i in range(numNeurons)]
+			c.weightVector = [Player.combine_element(wv1[i], wv2[i]) for i in range(numNeurons)]
+			c.bias = Player.combine_element(b1, b2) 
 		return children
 
 
@@ -124,10 +145,21 @@ class Player(object):
 	"""
 	@staticmethod
 	def combine_element(num1, num2):
-		a = rand()
+		a = random()
 		if(a < 0.475):
 			return num1
 		elif(a < 0.95):
 			return num2
 		else:
-			return (random()*2 - 1)
+			return uniform(-1, 1)
+
+
+	def save (self):
+		output = open('players/' + self.name + '.pkl', 'wb+')
+		pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
+		output.close()
+
+	@staticmethod
+	def load (file):
+		input = open(file, 'rb')
+		return pickle.load(input)
