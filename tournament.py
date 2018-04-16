@@ -6,10 +6,11 @@ class Tournament(object):
 	"""docstring for Tournament"""
 	def __init__(self, players, judges):
 		self.players = players
-		self.judges = jugdges
+		self.judges = judges
 		self.mandatory_players = [player.Player('jdr-nmx-Regular'), player.Player('jdr-nmx-Bueno'), player.Player('gazor3')]
+		self.judges = judges
 		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players}
-		for p in self.mandatory_players:
+		for p in self.mandatory_players + self.judges:
 			self.scores[p] = {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0}
 
 	def ranking (self):
@@ -37,7 +38,11 @@ class Tournament(object):
 		return result
 
 	def all_vs_judges(self, verbose):
-		
+		for j in self.judges:
+			for p in self.players:
+				if verbose:
+					print(p.name, 'vs', j.name)
+				self.match(j, p)
 
 	def all_vs_all (self, verbose):
 		# matches between players
@@ -61,9 +66,9 @@ class Tournament(object):
 		content = open('players/mancala.cl', 'r').read()
 
 		# File with the game, the players and two matches
-		if p1 not in self.mandatory_players:
+		if p1 not in self.mandatory_players and p1 not in self.judges:
 			content += str(p1)
-		if p2 not in self.mandatory_players:
+		if p2 not in self.mandatory_players and p2 not in self.judges:
 			content += str(p2)
 		lisp_file.write(content + '\n')
 		lisp_file.write('(partida 0 2 (list *' + p1.name + '*		*' + p2.name + '*))\n')

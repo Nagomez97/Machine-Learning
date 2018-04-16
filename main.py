@@ -76,6 +76,10 @@ gen = 0
 
 os.system('clear')
 
+# Generamos una generacion de jueces aleatorios
+aleat_judges = [player.Player.random_player('Judge' + str(i), 10, 14) for i in range(10)]
+best_players = []
+
 if verbose:
 	print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 	print('X                         Generación 0                            X')
@@ -86,8 +90,9 @@ else:
 n = 'gen' + str(gen) + 'player'
 players = [player.Player.random_player(n + str(i), 10, 14) for i in range(10)]
 
-t = tournament.Tournament(players)
-t.all_vs_all(verbose)
+judges = aleat_judges + best_players
+t = tournament.Tournament(players, judges)
+t.all_vs_judges(verbose)
 
 # print(top1.name, ':', score_top1['w'], 'ganadas	', score_top1['d'], 'empatadas	', score_top1['l'], 'perdidas')
 # print(top2.name, ':', score_top2['w'], 'ganadas	', score_top2['d'], 'empatadas	', score_top2['l'], 'perdidas')
@@ -97,6 +102,10 @@ print('\n\n\n\nGen 0 Top 2:\n')
 ranking = t.print_ranking(2)
 top1, score_top1 = ranking[0]
 top2, score_top2 = ranking[1]
+top3, score_top3 = ranking[2]
+
+# Aniadimos el tercer clasificado a la lista de jueces
+best_players.append(top3)
 
 top1.save()
 top2.save()
@@ -114,18 +123,24 @@ for i in range(1, numGens):
 	n = 'gen' + str(gen) + 'player'
 	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
+	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(10)]
+	judges = best_players + aleat_judges
 	if load:
-		t = tournament.Tournament(loaded_players)
+		t = tournament.Tournament(loaded_players, judges)
 	else:
-		t = tournament.Tournament(players)
+		t = tournament.Tournament(players, judges)
 
-	t.all_vs_all(verbose)
+	t.all_vs_judges( verbose)
 
 	
 	print('\n\n\n\nGen {} Top 2:'.format(gen))
 	ranking = t.print_ranking(-1)
 	top1, score_top1 = ranking[0]
 	top2, score_top2 = ranking[1]
+	top3, score_top3 = ranking[2]
+	
+	best_players.append(top3)
+
 	top1.save()
 	top2.save()
 # top1.save()
