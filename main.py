@@ -7,7 +7,7 @@ sim_dir = './players/tournament'
 load_dir = './players/load'
 
 # Poner a False para no mostrar salidas de pantalla
-verbose = True
+verbose = False
 
 # Se pone a True cuando se recibe la flag --load
 load = False
@@ -31,7 +31,7 @@ if len(sys.argv) == 2:
 				players.append(p)
 
 		if len(players) > 0:
-			t = tournament.Tournament(players)
+			t = tournament.Tournament(players, [])
 			t.all_vs_all(verbose)	
 			ranking = t.print_ranking(-1)
 		else: 
@@ -97,7 +97,7 @@ t.all_vs_judges(verbose)
 # print(top1.name, ':', score_top1['w'], 'ganadas	', score_top1['d'], 'empatadas	', score_top1['l'], 'perdidas')
 # print(top2.name, ':', score_top2['w'], 'ganadas	', score_top2['d'], 'empatadas	', score_top2['l'], 'perdidas')
 
-print('\n\n\n\nGen 0 Top 2:\n')
+print('\n\n\n\nGen 0 Ranking:\n')
 
 ranking = t.print_ranking(2)
 top1, score_top1 = ranking[0]
@@ -118,19 +118,19 @@ for i in range(1, numGens):
 		print('X                         Generación {}                            X'.format(gen))
 		print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 	else:
-		print('\n\nGeneración ' + str(gen) + '...\n')
+		print('\n\nGeneración ' + str(gen) + ' de ' + srt(numGens) + '...\n')
 
 	n = 'gen' + str(gen) + 'player'
 	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
-	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(10)]
+	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(30)]
 	judges = best_players + aleat_judges
 	if load:
-		t = tournament.Tournament(loaded_players, judges)
+		t = tournament.Tournament(loaded_players, aleat_judges)
 	else:
-		t = tournament.Tournament(players, judges)
+		t = tournament.Tournament(players, aleat_judges)
 
-	t.all_vs_judges( verbose)
+	t.all_vs_judges(verbose)
 
 	
 	print('\n\n\n\nGen {} Top 2:'.format(gen))

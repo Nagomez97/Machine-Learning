@@ -43,6 +43,11 @@ class Tournament(object):
 				if verbose:
 					print(p.name, 'vs', j.name)
 				self.match(j, p)
+		for mp in self.mandatory_players:
+			for p in self.players:
+				if verbose:
+					print(p.name, 'vs', mp.name)
+				self.match(mp, p)
 
 	def all_vs_all (self, verbose):
 		# matches between players
@@ -66,9 +71,9 @@ class Tournament(object):
 		content = open('players/mancala.cl', 'r').read()
 
 		# File with the game, the players and two matches
-		if p1 not in self.mandatory_players and p1 not in self.judges:
+		if p1 not in self.mandatory_players:
 			content += str(p1)
-		if p2 not in self.mandatory_players and p2 not in self.judges:
+		if p2 not in self.mandatory_players:
 			content += str(p2)
 		lisp_file.write(content + '\n')
 		lisp_file.write('(partida 0 2 (list *' + p1.name + '*		*' + p2.name + '*))\n')
