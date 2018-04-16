@@ -118,7 +118,7 @@ for i in range(1, numGens):
 		print('X                         Generación {}                            X'.format(gen))
 		print('XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX')
 	else:
-		print('\n\nGeneración ' + str(gen) + ' de ' + srt(numGens) + '...\n')
+		print('\n\nGeneración ' + str(gen) + ' de ' + str(numGens) + '...\n')
 
 	n = 'gen' + str(gen) + 'player'
 	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
