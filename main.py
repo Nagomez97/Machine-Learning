@@ -12,6 +12,9 @@ verbose = False
 # Se pone a True cuando se recibe la flag --load
 load = False
 
+# Se pone a True cuando se recibe la flag --avg
+avg = False
+
 if len(sys.argv) == 2:
 
 	# Para simular un torneo entre jugadores ya almacenados
@@ -69,6 +72,9 @@ if len(sys.argv) == 3:
 		f.close()
 		print('generated', p.name + '.cl')
 		sys.exit()
+	if sys.argv[1] == '--avg':
+		numGens = int(sys.argv[2])
+		avg = True
 	
 
 # Generacion original
@@ -77,7 +83,7 @@ gen = 0
 os.system('clear')
 
 # Generamos una generacion de jueces aleatorios
-aleat_judges = [player.Player.random_player('Judge' + str(i), 10, 14) for i in range(10)]
+aleat_judges = [player.Player.random_player('Judge' + str(i), 10, 14) for i in range(30)]
 best_players = []
 
 if verbose:
@@ -99,7 +105,10 @@ t.all_vs_judges(verbose)
 
 print('\n\n\n\nGen 0 Ranking:\n')
 
-ranking = t.print_ranking(2)
+if avg:
+	ranking = t.print_avg_ranking(10)
+else:
+	ranking = t.print_ranking(10)
 top1, score_top1 = ranking[0]
 top2, score_top2 = ranking[1]
 top3, score_top3 = ranking[2]
@@ -123,10 +132,12 @@ for i in range(1, numGens):
 	n = 'gen' + str(gen) + 'player'
 	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
-	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(30)]
+	aleat_judges = [player.Player.random_player('judge' + str(i), 10, 14) for i in range(30)]
 	judges = best_players + aleat_judges
 	if load:
 		t = tournament.Tournament(loaded_players, aleat_judges)
+	elif avg:
+		t.update(players, aleat_judges)
 	else:
 		t = tournament.Tournament(players, aleat_judges)
 
@@ -134,7 +145,11 @@ for i in range(1, numGens):
 
 	
 	print('\n\n\n\nGen {} Top 2:'.format(gen))
-	ranking = t.print_ranking(-1)
+	if avg:
+		ranking = t.print_avg_ranking(10)
+	else:
+		ranking = t.print_ranking(10)
+	
 	top1, score_top1 = ranking[0]
 	top2, score_top2 = ranking[1]
 	top3, score_top3 = ranking[2]

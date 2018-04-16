@@ -8,12 +8,37 @@ class Tournament(object):
 		self.players = players
 		self.judges = judges
 		self.mandatory_players = [player.Player('jdr-nmx-Regular'), player.Player('jdr-nmx-Bueno'), player.Player('gazor3')]
-		self.judges = judges
 		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players}
 		for p in self.mandatory_players + self.judges:
 			self.scores[p] = {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0}
 
-	def ranking (self):
+	def update(self, players, judges):
+		self.judges = judges
+		self.players = players
+
+		scores = {p: v for p, v in self.scores.items() if p in players+judges+self.mandatory_players}
+		for p in scores:
+			scores[p]['m'] = 0
+		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players+judges+self.mandatory_players}
+		self.scores.update(scores)
+
+	def avg_ranking(self):
+		return sorted(self.scores.items(), key=lambda x: [x[1]['m'], x[1]['w']/(x[1]['w']+x[1]['d']+x[1]['l']), x[1]['w'], x[1]['d'], x[1]['s']], reverse=True)
+
+	def print_avg_ranking(self, numPlayers):
+		ranking = self.avg_ranking()
+		
+		if numPlayers == -1:
+			numPlayers = len(ranking)
+
+		for i in range(numPlayers):
+			pos, score = ranking[i]
+			avg = ((score['w']*100)//(score['w']+score['d']+score['l']))/100
+			print(pos.name, ':	', avg, '%	', score['w'], 'ganadas	', score['d'], 'empatadas	', score['l'], 'perdidas	', score['m'], 'mand')
+
+		return ranking
+
+	def ranking(self):
 		# result = sorted(self.scores.items(), key=lambda x: x[1]['s'], reverse=True)
 		# result = sorted(result, key=lambda x: x[1]['d'], reverse=True)
 		# result = sorted(result, key=lambda x: x[1]['w'], reverse=True)
