@@ -155,7 +155,7 @@ class Player(object):
 
 
 	def save (self):
-		output = open('players/' + self.name + '.pkl', 'wb+')
+		output = open('players/last_run/' + self.name + '.pkl', 'wb+')
 		pickle.dump(self, output, pickle.HIGHEST_PROTOCOL)
 		output.close()
 

@@ -4,9 +4,10 @@ import player
 
 class Tournament(object):
 	"""docstring for Tournament"""
-	def __init__(self, players):
+	def __init__(self, players, judges):
 		self.players = players
-		self.mandatory_players = [player.Player('jdr-nmx-Regular'), player.Player('jdr-nmx-Bueno')]
+		self.judges = jugdges
+		self.mandatory_players = [player.Player('jdr-nmx-Regular'), player.Player('jdr-nmx-Bueno'), player.Player('gazor3')]
 		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players}
 		for p in self.mandatory_players:
 			self.scores[p] = {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0}
@@ -19,18 +20,40 @@ class Tournament(object):
 		result = sorted(self.scores.items(), key=lambda x: [x[1]['m'], x[1]['w'], x[1]['d'], x[1]['s']], reverse=True)
 		return result
 
-	def all_vs_all (self):
+	""" Prints the ranking of wins
+	If numPlayers == -1, shows the whole ranking
+	:param numPlayers: number of players we want to show
+	"""
+	def print_ranking(self, numPlayers):
+		result = sorted(self.scores.items(), key=lambda x: [x[1]['m'], x[1]['w'], x[1]['d'], x[1]['s']], reverse=True)
+		
+		if numPlayers == -1:
+			numPlayers = len(result)
+
+		for i in range(numPlayers):
+			pos, score = result[i]
+			print(pos.name, ':', score['w'], 'ganadas	', score['d'], 'empatadas	', score['l'], 'perdidas', score['m'], 'mandatory')
+
+		return result
+
+	def all_vs_judges(self, verbose):
+		
+
+	def all_vs_all (self, verbose):
 		# matches between players
 		for i, p1 in enumerate(self.players):
 			rest = [self.players[j] for j in range(i+1, len(self.players))]
 			for p2 in rest:
-				print(p1.name, 'vs', p2.name)
+				if verbose:	
+					print(p1.name, 'vs', p2.name)
 				self.match(p1, p2)
 		# matches against mandatory players
 		for mp in self.mandatory_players:
 			for p in self.players:
-				print(p.name, 'vs', mp.name)
+				if verbose:
+					print(p.name, 'vs', mp.name)
 				self.match(mp, p)
+		print('\n\n')
 
 	def match (self, p1, p2):
 		file_name = 'players/' + p1.name + '_vs_' + p2.name + '.cl'
@@ -98,3 +121,5 @@ class Tournament(object):
 			self.scores[p1]['s'] += scores[1][1]
 
 		subprocess.run(['rm', file_name])
+
+

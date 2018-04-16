@@ -839,6 +839,118 @@
                         :f-juego  #'f-j-nmx
                         :f-eval   #'f-eval-Regular))
 
+;;; Jugador Mio
+;;; ------------------------------------------------------------------------------------------
+; Posibles fichas a kalaha
+(defun mis-kalahas (num lado)
+  (if (null lado)
+      0
+    (+ (mis-kalahas (+ num 1)(rest lado))
+       (if (equal (+ num
+                     (first lado)) 
+                  6)
+           -5
+         0))))
+
+; Fichas en el kalaha
+(defun cuenta-kalaha (tablero lado)
+  (get-fichas tablero lado 6))
+
+; Posiciones de posible captura
+(defun capturas (tablero pos mi-lado otro-lado)
+  (if (equal pos 6)
+      0
+    (- (capturas tablero (+ 1 pos) mi-lado otro-lado)
+       (if (equal 0 
+                  (get-fichas tablero mi-lado pos))
+           (get-fichas tablero otro-lado (- 5 pos))
+         1))))
+
+; Cuencas vacias en el jugador
+(defun vacios (tablero pos lado)
+  (if (equal pos 6)
+      0
+    (+ (vacios tablero (+ 1 pos) lado)
+       (if (equal (get-fichas tablero lado pos) 1)
+           1
+         0))))
+
+
+(defun mi-f-eval (estado)
+  (+ (cuenta-kalaha (estado-tablero estado) 
+                    (estado-lado-sgte-jugador estado))
+     (get-pts (estado-lado-sgte-jugador estado))
+     (vacios (estado-tablero estado)
+             0
+             (estado-lado-sgte-jugador estado))))
+
+
+(defun mi-acumulador (estado)
+  (get-tot (estado-lado-sgte-jugador estado)))
+
+(defun mi-f-eval (estado)
+  (+ (cuenta-kalaha (estado-tablero estado) 
+                    (estado-lado-sgte-jugador estado))
+     (get-pts (estado-lado-sgte-jugador estado))
+     (vacios (estado-tablero estado)
+             0
+             (estado-lado-sgte-jugador estado))
+     (mi-acumulador estado)))
+
+(defvar *test4* (make-jugador
+                        :nombre   '|test3|
+                        :f-juego  #'f-j-nmx
+                           :f-eval   #'mi-f-eval))
+
+
+
+
+;(defun mi-f-ev (estado)
+;  (+ (mis-kalahas 0 (list-lado estado (estado-lado-sgte-jugador estado))) 
+;     (capturas (estado-tablero estado) 
+;               0 
+;               (estado-lado-sgte-jugador estado) 
+;               (lado-contrario (estado-lado-sgte-jugador estado)))))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; JUGADORES ENTREGADOS
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun F-GAZOR-1 (estado)
+  (+ (mis-kalahas 0 (list-lado estado (estado-lado-sgte-jugador estado)))
+     (cuenta-kalaha (estado-tablero estado) 
+                    (estado-lado-sgte-jugador estado))
+     (* 2 (get-pts (estado-lado-sgte-jugador estado)))))
+
+(defvar *gazor1* (make-jugador
+                        :nombre   '|gazor-1|
+                        :f-juego  #'f-j-nmx
+                           :f-eval   #'F-GAZOR-1))
+
+
+(defun F-GAZOR-2 (estado)
+  (+ (mis-kalahas 0 (list-lado estado (estado-lado-sgte-jugador estado))) 
+     (get-pts (estado-lado-sgte-jugador estado))))
+
+(defvar *gazor2* (make-jugador
+                        :nombre   '|gazor-2|
+                        :f-juego  #'f-j-nmx
+                  :f-eval   #'F-GAZOR-2))
+
+(defun F-GAZOR-3 (estado)
+  (+ (cuenta-kalaha (estado-tablero estado) 
+                    (estado-lado-sgte-jugador estado))
+     (get-pts (estado-lado-sgte-jugador estado))
+     (vacios (estado-tablero estado)
+             0
+             (estado-lado-sgte-jugador estado))))
+
+(defvar *gazor3* (make-jugador
+                        :nombre   '|gazor-3|
+                        :f-juego  #'f-j-nmx
+                  :f-eval   #'F-GAZOR-3))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Jugador mutable
