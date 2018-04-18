@@ -68,6 +68,7 @@ class Player(object):
 	:param population: number of players in the new generation
 	:param numNeurons: number of neurons in hidden layer
 	:param numInputs: number of inputs
+	:param numRandom: number of aleat players of the new gen
 	
 	returns a list of mutated players (generated or combined):
 		player1
@@ -76,17 +77,22 @@ class Player(object):
 		population - 3 combined players
 	"""
 	@staticmethod
-	def new_generation(gen, player1, player2, population, numNeurons, numInputs):
+	def new_generation(gen, parents, population, numNeurons, numInputs, numRandom):
 		newGen = []
-		newGen.append(player1)
-		newGen.append(player2)
+		children = population - (len(parents) + numRandom)
+
+		for p in parents:
+			newGen.append(p)
+
 		# Introduce a new random player
 		name = 'gen' + str(gen) + 'player'
-		newGen.append(Player.random_player(name + '2', numNeurons, numInputs))
+		for i in range(numRandom):
+			newGen.append(Player.random_player(name + str(i), numNeurons, numInputs))
+
 		# Generate names
-		names = [name + str(i+3) for i in range(population-3)]
-		# Combine new players
-		newGen += Player.combine_players(player1, player2, population-3, numNeurons, numInputs, names)
+		names = [name + str(i+numRandom) for i in range(children)]
+		# Combine new players (only from the first two parents)
+		newGen += Player.combine_players(parents[0], parents[1], children, numNeurons, numInputs, names)
 		return newGen
 
 	""" Combine two players and generates a list of children

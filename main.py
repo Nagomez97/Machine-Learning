@@ -31,9 +31,11 @@ if len(sys.argv) == 2:
 				players.append(p)
 
 		if len(players) > 0:
-			t = tournament.Tournament(players, [])
-			t.all_vs_all(verbose)	
-			ranking = t.print_ranking(-1)
+			n = 'TestPlayer'
+			aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(100)]
+			t = tournament.Tournament(players, aleat_judges)
+			t.all_vs_judges(verbose)	
+			ranking = t.print_ranking(10)
 		else: 
 			print("No players found.")
 		
@@ -103,6 +105,8 @@ ranking = t.print_ranking(2)
 top1, score_top1 = ranking[0]
 top2, score_top2 = ranking[1]
 top3, score_top3 = ranking[2]
+top4, score_top4 = ranking[3]
+top5, score_top5 = ranking[4]
 
 # Aniadimos el tercer clasificado a la lista de jueces
 best_players.append(top3)
@@ -121,9 +125,12 @@ for i in range(1, numGens):
 		print('\n\nGeneración ' + str(gen) + ' de ' + str(numGens) + '...\n')
 
 	n = 'gen' + str(gen) + 'player'
-	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
-	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(30)]
+	parents = [top1, top2, top3, top4, top5] # Lista con los jugadores que sobreviven cada generacion
+
+	players = player.Player.new_generation(gen, parents, 20, 10, 14, 5)
+
+	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(40)]
 	judges = best_players + aleat_judges
 	if load:
 		t = tournament.Tournament(loaded_players, aleat_judges)
