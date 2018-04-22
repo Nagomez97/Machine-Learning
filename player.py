@@ -76,17 +76,19 @@ class Player(object):
 		population - 3 combined players
 	"""
 	@staticmethod
-	def new_generation(gen, player1, player2, population, numNeurons, numInputs):
+	def new_generation(gen, player1, player2, population, numNeurons, numInputs, players=[]):
 		newGen = []
 		newGen.append(player1)
 		newGen.append(player2)
+		newGen += players
+		newPlayers = population-3-len(players)
 		# Introduce a new random player
 		name = 'gen' + str(gen) + 'player'
 		newGen.append(Player.random_player(name + '2', numNeurons, numInputs))
 		# Generate names
-		names = [name + str(i+3) for i in range(population-3)]
+		names = [name + str(i+3+len(players)) for i in range(newPlayers)]
 		# Combine new players
-		newGen += Player.combine_players(player1, player2, population-3, numNeurons, numInputs, names)
+		newGen += Player.combine_players(player1, player2, newPlayers, numNeurons, numInputs, names)
 		return newGen
 
 	""" Combine two players and generates a list of children

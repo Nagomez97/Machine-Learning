@@ -8,9 +8,9 @@ class Tournament(object):
 		self.players = players
 		self.judges = judges
 		self.mandatory_players = [player.Player('jdr-nmx-Regular'), player.Player('jdr-nmx-Bueno'), player.Player('gazor3')]
-		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players}
+		self.scores = {p: {'w': 1, 'd': 1, 'l': 1, 's': 0, 'm': 0} for p in players}
 		for p in self.mandatory_players + self.judges:
-			self.scores[p] = {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0}
+			self.scores[p] = {'w': 1, 'd': 1, 'l': 1, 's': 0, 'm': 0}
 
 	def update(self, players, judges):
 		self.judges = judges
@@ -19,7 +19,7 @@ class Tournament(object):
 		scores = {p: v for p, v in self.scores.items() if p in players+judges+self.mandatory_players}
 		for p in scores:
 			scores[p]['m'] = 0
-		self.scores = {p: {'w': 0, 'd': 0, 'l': 0, 's': 0, 'm': 0} for p in players+judges+self.mandatory_players}
+		self.scores = {p: {'w': 1, 'd': 1, 'l': 1, 's': 0, 'm': 0} for p in players+judges+self.mandatory_players}
 		self.scores.update(scores)
 
 	def avg_ranking(self):
@@ -33,8 +33,8 @@ class Tournament(object):
 
 		for i in range(numPlayers):
 			pos, score = ranking[i]
-			avg = ((score['w']*100)//(score['w']+score['d']+score['l']))/100
-			print(pos.name, ':	', avg, '%	', score['w'], 'ganadas	', score['d'], 'empatadas	', score['l'], 'perdidas	', score['m'], 'mand')
+			avg = ((score['w']*10000)//(score['w']+score['d']+score['l']))/100
+			print(pos.name, ':	 ', avg, '%	', score['w'], 'ganadas	', score['d'], 'empatadas	', score['l'], 'perdidas	', score['m'], 'mand')
 
 		return ranking
 

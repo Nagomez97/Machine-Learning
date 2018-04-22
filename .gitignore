@@ -1,4 +1,5 @@
 __pycache__
-players/*.pkl
 players/last_run
+players/best-players
+players/tournament
 output
