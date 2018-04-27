@@ -1,6 +1,7 @@
 import subprocess
 import tempfile
 import player
+import threading
 
 class Tournament(object):
 	"""docstring for Tournament"""
@@ -38,32 +39,53 @@ class Tournament(object):
 		return result
 
 	def all_vs_judges(self, verbose):
+		list_threads = []
 		for j in self.judges:
 			for p in self.players:
 				if verbose:
 					print(p.name, 'vs', j.name)
-				self.match(j, p)
+				t = threading.Thread(target = self.match, args = (j,p))
+				list_threads.append(t)
 		for mp in self.mandatory_players:
 			for p in self.players:
 				if verbose:
 					print(p.name, 'vs', mp.name)
-				self.match(mp, p)
+				t = threading.Thread(target = self.match, args = (mp,p))
+				list_threads.append(t)
+
+		for t in [list_threads[i:i+50] for i in range(0, len(list_threads), 50)]:
+			for l in t:
+				l.start()
+			for l in t:
+				l.join()
 
 	def all_vs_all (self, verbose):
+		list_threads = []
 		# matches between players
 		for i, p1 in enumerate(self.players):
 			rest = [self.players[j] for j in range(i+1, len(self.players))]
 			for p2 in rest:
 				if verbose:	
 					print(p1.name, 'vs', p2.name)
-				self.match(p1, p2)
+				t = threading.Thread(target = self.match, args = (p1,p2))
+				t.start()
+				list_threads.append(t)
 		# matches against mandatory players
 		for mp in self.mandatory_players:
 			for p in self.players:
 				if verbose:
 					print(p.name, 'vs', mp.name)
-				self.match(mp, p)
+				t = threading.Thread(target = self.match, args = (mp,p))
+				t.start()
+				list_threads.append(t)
+
+		for t in [list_threads[i:i+50] for i in range(0, len(list_threads), 50)]:
+			for l in t:
+				l.start()
+			for l in t:
+				l.join()
 		print('\n\n')
+
 
 	def match (self, p1, p2):
 		file_name = 'players/' + p1.name + '_vs_' + p2.name + '.cl'

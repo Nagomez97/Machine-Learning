@@ -121,9 +121,9 @@ for i in range(1, numGens):
 		print('\n\nGeneración ' + str(gen) + ' de ' + str(numGens) + '...\n')
 
 	n = 'gen' + str(gen) + 'player'
-	players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
+	players = player.Player.new_generation(gen, top1, top2, 100, 10, 14)
 
-	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(30)]
+	aleat_judges = [player.Player.random_player(n + str(i), 10, 14) for i in range(50)]
 	judges = best_players + aleat_judges
 	if load:
 		t = tournament.Tournament(loaded_players, aleat_judges)
