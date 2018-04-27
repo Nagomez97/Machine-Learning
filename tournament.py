@@ -68,7 +68,6 @@ class Tournament(object):
 				if verbose:	
 					print(p1.name, 'vs', p2.name)
 				t = threading.Thread(target = self.match, args = (p1,p2))
-				t.start()
 				list_threads.append(t)
 		# matches against mandatory players
 		for mp in self.mandatory_players:
@@ -76,7 +75,6 @@ class Tournament(object):
 				if verbose:
 					print(p.name, 'vs', mp.name)
 				t = threading.Thread(target = self.match, args = (mp,p))
-				t.start()
 				list_threads.append(t)
 
 		for t in [list_threads[i:i+50] for i in range(0, len(list_threads), 50)]:
