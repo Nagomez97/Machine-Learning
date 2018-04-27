@@ -83,7 +83,7 @@ gen = 0
 os.system('clear')
 
 # Generamos una generacion de jueces aleatorios
-aleat_judges = [player.Player.random_player('Judge' + str(i), 10, 14) for i in range(30)]
+aleat_judges = [player.Player.random_player('Judge' + str(i), 10, 14) for i in range(50)]
 best_players = []
 
 if verbose:
@@ -96,7 +96,7 @@ else:
 n = 'gen' + str(gen) + 'player'
 
 if avg:
-	players = [player.Player.random_player(n + str(i), 10, 14) for i in range(20)]
+	players = [player.Player.random_player(n + str(i), 10, 14) for i in range(100)]
 else:
 	players = [player.Player.random_player(n + str(i), 10, 14) for i in range(10)]
 
@@ -138,11 +138,11 @@ for i in range(1, numGens):
 	n = 'gen' + str(gen) + 'player'
 
 	if avg:
-		players = player.Player.new_generation(gen, top1, top2, 20, 10, 14, survivors)
+		players = player.Player.new_generation(gen, top1, top2, 100, 10, 14, survivors)
 	else:
 		players = player.Player.new_generation(gen, top1, top2, 10, 10, 14)
 
-	aleat_judges = [player.Player.random_player('judge' + str(i), 10, 14) for i in range(30)]
+	aleat_judges = [player.Player.random_player('judge' + str(i), 10, 14) for i in range(50)]
 
 	judges = best_players + aleat_judges
 	
